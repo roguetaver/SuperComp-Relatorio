@@ -14,7 +14,7 @@ int get_score(string A, string B)
     {
         if (A[i] != B[i])
         {
-            score += 1;
+            score -= 1;
         }
         else if (A[i] == B[i])
         {
@@ -96,42 +96,6 @@ int main()
                     best_score = score;
                     best_seqA = all_subseq_A[i];
                     best_seqB = all_subseq_B[j];
-                }
-            }
-
-            else if (sizeA < sizeB)
-            {
-                string subseq_menor = all_subseq_A[i];
-                string subseq_maior = all_subseq_B[j];
-
-                for (int i = 0; i < (int(subseq_maior.size()) - int(subseq_menor.size())); i++)
-                {
-                    score = get_score(subseq_menor, subseq_maior.substr(i, int(subseq_menor.size())));
-
-                    if (score >= best_score)
-                    {
-                        best_score = score;
-                        best_seqA = subseq_menor;
-                        best_seqB = subseq_maior.substr(i, int(subseq_menor.size()));
-                    }
-                }
-            }
-
-            else if (sizeA > sizeB)
-            {
-                string subseq_maior = all_subseq_A[i];
-                string subseq_menor = all_subseq_B[j];
-
-                for (int i = 0; i < (int(subseq_maior.size()) - int(subseq_menor.size())); i++)
-                {
-                    score = get_score(subseq_menor, subseq_maior.substr(i, int(subseq_menor.size())));
-
-                    if (score >= best_score)
-                    {
-                        best_score = score;
-                        best_seqA = subseq_maior.substr(i, int(subseq_menor.size()));
-                        best_seqB = subseq_menor;
-                    }
                 }
             }
         }
