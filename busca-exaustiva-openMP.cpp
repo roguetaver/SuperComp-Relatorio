@@ -49,7 +49,7 @@ int main()
     cin >> seqA;
     cin >> seqB;
 
-    omp_set_num_threads(3);
+    //omp_set_num_threads(4);
 
     // print das sequencias A e B assim como seus respectivos tamanhos
 
@@ -80,9 +80,12 @@ int main()
 
 // comparação exaustiva entre todas as subsequencias geradas
 int best_score = 0;
-#pragma omp parallel for shared(best_seqA, best_seqB)  reduction(max: best_score)
+
+//#pragma omp parallel for shared(best_seqA, best_seqB) reduction(max: best_score)
+#pragma omp parallel for reduction(max: best_score)
     for (int i = 0; i < int(all_subseq_A.size()); i++)
-    {
+    {   
+        //#pragma omp parallel for shared(best_seqA, best_seqB) reduction(max: best_score)
         for (int j = 0; j < int(all_subseq_B.size()); j++)
         {
             // tamanho da subsequencia A atual
