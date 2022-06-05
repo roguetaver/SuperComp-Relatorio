@@ -1,8 +1,5 @@
 #include <iostream>
 #include <algorithm>
-#include <vector>
-#include <fstream>
-#include <string>
 #include <random>
 #include <omp.h>
 
@@ -12,7 +9,9 @@ using namespace std;
 int get_score(string A, string B)
 {
     int score = 0;
-    for (int i = 0; i < int(A.size()); i++)
+    int size = int(A.size());
+    
+    for (int i = 0; i < size; i++)
     {
         if (A[i] != B[i])
         {
@@ -26,21 +25,24 @@ int get_score(string A, string B)
     return score;
 }
 
-int main()
-{
+int main() {
+
     // declarao e iniciação de variaveis
 
-    int m;
     int n;
+    int m;
     int score = 0;
-    int sizeA;
-    int sizeB;
+    int best_score = 0;
+
     string seqA;
     string seqB;
     string best_seqA;
     string best_seqB;
+
     vector<string> all_subseq_A;
     vector<string> all_subseq_B;
+    
+    omp_set_num_threads(4);
 
     // recebendo as sequencias A e B assim como seus tamanhos
 
@@ -49,57 +51,37 @@ int main()
     cin >> seqA;
     cin >> seqB;
 
-    //omp_set_num_threads(4);
-
-    // print das sequencias A e B assim como seus respectivos tamanhos
-
-    cout << "-------------------------------------" << endl;
-    cout << "Tamanho de A (n) = " << n << endl;
-    cout << "Sequencia A = " << seqA << endl;
-    cout << "-------------------------------------" << endl;
-    cout << "Tamanho de B (m) = " << m << endl;
-    cout << "Sequencia B = " << seqB << endl;
-
     // geração de todas as subsequencias possíveis das sequencias A e B
 
-    for (int i = 0; i <= int(seqA.size()); i++)
-    {
-        for (int j = 1; j <= int(seqA.size()); j++)
-        {
+    for (int i = 0; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
             all_subseq_A.push_back(seqA.substr(i, j));
         }
     }
 
-    for (int i = 0; i <= int(seqB.size()); i++)
-    {
-        for (int j = 1; j <= int(seqB.size()); j++)
-        {
+    for (int i = 0; i <= m; i++) {
+        for (int j = 1; j <= m; j++) {
             all_subseq_B.push_back(seqB.substr(i, j));
         }
     }
 
-// comparação exaustiva entre todas as subsequencias geradas
-int best_score = 0;
+    // comparação exaustiva entre todas as subsequencias geradas
 
-//#pragma omp parallel for shared(best_seqA, best_seqB) reduction(max: best_score)
-#pragma omp parallel for reduction(max: best_score)
-    for (int i = 0; i < int(all_subseq_A.size()); i++)
-    {   
-        //#pragma omp parallel for shared(best_seqA, best_seqB) reduction(max: best_score)
-        for (int j = 0; j < int(all_subseq_B.size()); j++)
-        {
-            // tamanho da subsequencia A atual
-            sizeA = int(all_subseq_A[i].size());
+    int all_subseq_A_size = int(all_subseq_A.size());
+    int all_subseq_B_size = int(all_subseq_B.size());
 
-            // tamanho da subsequencia B atual
-            sizeB = int(all_subseq_B[j].size());
+#pragma omp parallel for shared(best_seqA, best_seqB) reduction(max:best_score)
 
-            if (sizeA == sizeB)
-            {
+    for(int i = 0; i < all_subseq_A_size; i++){
+
+        #pragma omp parallel for 
+        for(int j = 0; j < all_subseq_B_size; j++){
+
+            if (int(all_subseq_A[i].size()) == int(all_subseq_B[j].size())) {
+
                 score = get_score(all_subseq_A[i], all_subseq_B[j]);
 
-                if (score >= best_score)
-                {
+                if (score >= best_score) {
                     best_score = score;
                     best_seqA = all_subseq_A[i];
                     best_seqB = all_subseq_B[j];
@@ -108,14 +90,14 @@ int best_score = 0;
         }
     }
 
-    // print das sequencias A e B alinhadas e seu score
+// print das sequencias A e B alinhadas e seu score
     cout << "-------------------------------------" << endl;
     cout << "Melhor score: " << best_score << endl;
     cout << "Sequencia A alinhada: " << best_seqA << endl;
     cout << "Sequencia B alinhada: " << best_seqB << endl;
     cout << "-------------------------------------" << endl;
 
-    return best_score;
+    return 0;
 }
 
 // g++ -Wall -O3 -fopenmp busca-exaustiva-openMP.cpp -o busca-exaustiva-openMP
