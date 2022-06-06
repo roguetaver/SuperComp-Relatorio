@@ -12,8 +12,8 @@ import random
 
 i = 1
 
-for n in range(50, 301, 50):
-    for m in range(50, 301, 50):
+for n in range(100, 1001, 100):
+    for m in range(100, 1001, 100):
         file = 'dna{}.seq'.format(i)
         f = open(file, 'w')
         seq = [str(n)+'\n',
