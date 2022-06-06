@@ -111,5 +111,5 @@ int main()
     return best_score;
 }
 
-// g++ -Wall -O3 main.cpp -o main
-// ./main < dna.seq
+// g++ -Wall -O3 busca-exaustiva.cpp -o busca-exaustiva
+// ./busca-exaustiva < dna.seq
